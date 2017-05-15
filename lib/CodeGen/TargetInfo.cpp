@@ -6505,6 +6505,30 @@ void MSP430TargetCodeGenInfo::setTargetAttributes(const Decl *D,
   }
 }
 
+/*** BEGIN 65816 ***/
+//===----------------------------------------------------------------------===//
+// WDC65816 ABI Implementation
+//===----------------------------------------------------------------------===//
+
+namespace {
+    
+    class WDC65816TargetCodeGenInfo : public TargetCodeGenInfo {
+    public:
+        WDC65816TargetCodeGenInfo(CodeGenTypes &CGT)
+        : TargetCodeGenInfo(new DefaultABIInfo(CGT)) {}
+        void SetTargetAttributes(const Decl *D, llvm::GlobalValue *GV,
+                                 CodeGen::CodeGenModule &M) const;
+    };
+    
+}
+
+void WDC65816TargetCodeGenInfo::SetTargetAttributes(const Decl *D,
+                                                  llvm::GlobalValue *GV,
+                                                  CodeGen::CodeGenModule &M) const {
+    // WDC_TODO - Do I need anything here?
+}
+/*** END 65816 ***/
+
 //===----------------------------------------------------------------------===//
 // MIPS ABI Implementation.  This works for both little-endian and
 // big-endian variants.
@@ -8500,6 +8524,11 @@ const TargetCodeGenInfo &CodeGenModule::getTargetCodeGenInfo() {
 
   case llvm::Triple::msp430:
     return SetCGInfo(new MSP430TargetCodeGenInfo(Types));
+
+  /*** BEGIN 65816 ***/
+  case llvm::Triple::wdc65816:
+    return *(TheTargetCodeGenInfo = new WDC65816TargetCodeGenInfo(Types));
+  /*** END 65816 ***/
 
   case llvm::Triple::systemz: {
     bool HasVector = getTarget().getABI() == "vector";
