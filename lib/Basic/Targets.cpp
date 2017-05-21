@@ -9083,7 +9083,7 @@ namespace {
             WCharType = UnsignedChar;
             WIntType = UnsignedInt;
             UseZeroLengthBitfieldAlignment = true;
-            DescriptionString = "e-p:32:8:8-i16:8:8-f32:8:8-f68:8:8-n16";
+            DescriptionString = "e-p:32:8:8-i16:8:8-n8:16";
         }
         virtual void getTargetDefines(const LangOptions &Opts,
                                       MacroBuilder &Builder) const {
