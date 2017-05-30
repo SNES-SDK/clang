@@ -9057,72 +9057,66 @@ protected:
   std::string CPU;
 };
 
+/*** BEGIN 65816 ***/
+class WDC65816TargetInfo : public TargetInfo {
+  static const Builtin::Info BuiltinInfo[];
+public:
+  WDC65816TargetInfo(const llvm::Triple &Triple) : TargetInfo(Triple) {
+    BigEndian = false;
+    TLSSupported = false;
+    PointerWidth = 32; PointerAlign = 8;
+    IntWidth = 16; IntAlign = 8;
+    FloatWidth  = 32; FloatAlign = 8;
+    DoubleWidth = 64; DoubleAlign = 8;
+    LongWidth = 32; LongAlign = 8;
+    LongLongWidth = 64; LongLongAlign = 8;
+    SuitableAlign = 8;
+
+    NoAsmVariants = true;
+
+    SizeType = UnsignedLong;
+    PtrDiffType = SignedLong;
+    IntPtrType = SignedLong;
+    WCharType = UnsignedChar;
+    WIntType = UnsignedInt;
+    UseZeroLengthBitfieldAlignment = true;
+    resetDataLayout("e-p:32:8:8-i16:8:8-n8:16");
+  }
+  void getTargetDefines(const LangOptions &Opts,
+                        MacroBuilder &Builder) const override {
+    Builder.defineMacro("WDC65816");
+    Builder.defineMacro("__WDC65816");
+    Builder.defineMacro("__WDC65816__");
+  }
+  ArrayRef<Builtin::Info> getTargetBuiltins() const override {
+    return None;
+  }
+  BuiltinVaListKind getBuiltinVaListKind() const override {
+    return TargetInfo::VoidPtrBuiltinVaList;
+  }
+  const char *getClobbers() const override {
+    return "";
+  }
+  ArrayRef<const char *> getGCCRegNames() const override {
+    static const char * const GCCRegNames[] = {
+      "A",   "X",   "Y"
+    };
+    return llvm::makeArrayRef(GCCRegNames);
+  }
+  ArrayRef<TargetInfo::GCCRegAlias> getGCCRegAliases() const override {
+    // No aliases.
+    return None;
+  }
+  bool validateAsmConstraint(const char *&Name,
+                           TargetInfo::ConstraintInfo &Info) const override {
+    return false;
+  }
+};
+const Builtin::Info WDC65816TargetInfo::BuiltinInfo[1] = { };
+/*** END 65816 ***/
+
 } // end anonymous namespace
 
-/*** BEGIN 65816 ***/
-namespace {
-    class WDC65816TargetInfo : public TargetInfo {
-        static const Builtin::Info BuiltinInfo[];
-    public:
-        WDC65816TargetInfo(const llvm::Triple &Triple) : TargetInfo(Triple) {
-            BigEndian = false;
-            TLSSupported = false;
-            PointerWidth = 32; PointerAlign = 8;
-            IntWidth = 16; IntAlign = 8;
-            FloatWidth  = 32; FloatAlign = 8;
-            DoubleWidth = 64; DoubleAlign = 8;
-            LongWidth = 32; LongAlign = 8;
-            LongLongWidth = 64; LongLongAlign = 8;
-            SuitableAlign = 8;
-
-            NoAsmVariants = true;
-
-            SizeType = UnsignedLong;
-            PtrDiffType = SignedLong;
-            IntPtrType = SignedLong;
-            WCharType = UnsignedChar;
-            WIntType = UnsignedInt;
-            UseZeroLengthBitfieldAlignment = true;
-            DescriptionString = "e-p:32:8:8-i16:8:8-n8:16";
-        }
-        virtual void getTargetDefines(const LangOptions &Opts,
-                                      MacroBuilder &Builder) const {
-            // WDC_TODO - what defines do we want?
-            // Builder.defineMacro("__XS1B__");
-        }
-        virtual void getTargetBuiltins(const Builtin::Info *&Records,
-                                       unsigned &NumRecords) const {
-            // WDC_TODO - What are these?
-            Records = BuiltinInfo;
-            NumRecords = 0;
-        }
-        virtual BuiltinVaListKind getBuiltinVaListKind() const {
-            return TargetInfo::VoidPtrBuiltinVaList;
-        }
-        virtual const char *getClobbers() const {
-            return "";
-        }
-        virtual void getGCCRegNames(const char * const *&Names,
-                                    unsigned &NumNames) const {
-            static const char * const GCCRegNames[] = {
-                "A",   "X",   "Y"
-            };
-            Names = GCCRegNames;
-            NumNames = llvm::array_lengthof(GCCRegNames);
-        }
-        virtual void getGCCRegAliases(const GCCRegAlias *&Aliases,
-                                      unsigned &NumAliases) const {
-            Aliases = NULL;
-            NumAliases = 0;
-        }
-        virtual bool validateAsmConstraint(const char *&Name,
-                                           TargetInfo::ConstraintInfo &Info) const {
-            return false;
-        }
-    };
-    const Builtin::Info WDC65816TargetInfo::BuiltinInfo[1] = { };
-}
-/*** END 65816 ***/
 
 //===----------------------------------------------------------------------===//
 // Driver code

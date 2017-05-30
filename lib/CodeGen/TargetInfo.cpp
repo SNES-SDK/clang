@@ -8527,7 +8527,7 @@ const TargetCodeGenInfo &CodeGenModule::getTargetCodeGenInfo() {
 
   /*** BEGIN 65816 ***/
   case llvm::Triple::wdc65816:
-    return *(TheTargetCodeGenInfo = new WDC65816TargetCodeGenInfo(Types));
+    return SetCGInfo(new WDC65816TargetCodeGenInfo(Types));
   /*** END 65816 ***/
 
   case llvm::Triple::systemz: {
